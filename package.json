@@ -7,6 +7,9 @@
     "test": "mocha -R nyan",
     "start": "node server.js"
   },
+  "devDependencies":{
+    "mocha": "2.3.x"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/zettaslow/ilikevideoga.me.git"
