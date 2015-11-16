@@ -9,7 +9,6 @@
   },
   "devDependencies":{
     "mocha": "2.3.x"
-    "mathjs": "2.4.x"
   },
   "repository": {
     "type": "git",
