@@ -43,13 +43,6 @@ html, body {
   text-align:center;
 }
 
-.pContainer .gameImg {
-  display: inline-block;
-  height: 100px;
-  width: 175px;
-  background-color: green;
-}
-
 .pContainer {
   display: inline-block;
   border-style: solid;
@@ -60,8 +53,23 @@ html, body {
   vertical-align: middle;
 }
 
+.pContainer .titleText {
+  float: left;
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.pContainer .gameImg {
+  display: inline-block;
+  float: left;
+  height: 45px;
+  width: 120px;
+  background-color: green;
+}
+
 .pContainer button {
   display: inline-block;
+  float: right;
   font: bold 1em Helvetica, Sans-Serif;
 }
 
