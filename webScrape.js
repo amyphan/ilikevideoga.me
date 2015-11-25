@@ -17,6 +17,7 @@ function webScrape()
       var pageHTML = "";
       var imgList = [];
       var titles = [];
+      var prices = [];
       $('.search_name').each(function(i, element) {
         titles[i] = {};
         titles[i].title = $(this).text().trim();
@@ -30,13 +31,18 @@ function webScrape()
         imgList[i] = $(this).html();
       });
 
+      $('.search_price.responsive_secondrow').each(function(i, element) {
+        prices[i] = $(this).html();
+      });
+
     }
     pageHTML = '<head>\n</head>\n</body>\n   <div>';
 
       for(i = 0; i < titles.length; i++)
       {
         pageHTML += imgList[i] + '\n';
-        pageHTML += "<p>" + titles[i].title + ": " + titles[i].released + '</p>\n';
+        pageHTML += "<p>" + titles[i].title + ": " + titles[i].released + '\n';
+        pageHTML += prices[i] + '</p>\n';
       }
     pageHTML += '\n</div>\n    </body>';
 

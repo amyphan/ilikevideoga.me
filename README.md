@@ -6,3 +6,5 @@ More Details coming soon. This repo will have all of our scripts and html pages 
 Basics: run sudo node server.js to run the website if it isn't already up
 
 - Run webScrape.js to sample our webScraping methods
+
+Now With Jenkin Support!
