@@ -10,15 +10,67 @@ html, body {
     padding-right:30px;
 }
 
-.header {
-    text-align:center;
-    padding:40px;
-    color: #FF9000;
-    text-shadow:2px 2px #202020;
+.header-splash {
+  position:relative;
+  height: 35%;
+  width: 100%;
+  background: linear-gradient(orange, #5f5f5f);
+}
+
+.header-splash .header {
+  position:absolute;
+  text-align:right;
+  top: 70%;
+  width:100%;
+  color: #FF9000;
+  text-shadow:2px 2px #202020;
+}
+
+.header a {
+  text-decoration:none;
+  color:inherit;
+}
+
+.header span {
+  font: bold 2.1em Helvetica, Sans-Serif;
+  letter-spacing: 1px;
+  background: rgb(0,0,0);
+  background: rgba(0,0,0,0.6);
+  padding: 10px;
 }
 
 .news {
-    text-align:center;
+  text-align:center;
+}
+
+.pContainer {
+  display: inline-block;
+  border-style: solid;
+  border-width: 2px;
+  width: 90%;
+  margin: 5px;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+.pContainer .titleText {
+  float: left;
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.pContainer .gameImg {
+  display: inline-block;
+  float: left;
+  height: 45px;
+  width: 120px;
+  background-color: green;
+}
+
+.pContainer button {
+  display: inline-block;
+  float: right;
+  font: bold 1em Helvetica, Sans-Serif;
 }
 
 .sales {

@@ -2,6 +2,8 @@
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
+var cheerio = require('cheerio');
+var webRequest = require('request');
 
 //Lets define a port we want to listen to
 const PORT=80;
