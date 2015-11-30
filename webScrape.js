@@ -5,6 +5,7 @@ var cheerio = require('cheerio');
 var webRequest = require('request');
 var mysql = require('mysql');
 <<<<<<< HEAD
+//EVENT EMITTER
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
 =======
