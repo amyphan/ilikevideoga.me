@@ -4,10 +4,8 @@ var fs = require('fs');
 var path = require('path');
 var cheerio = require('cheerio');
 var webRequest = require('request');
-
 //Lets define a port we want to listen to
 const PORT=80;
-     
 //Create a server
 var server = http.createServer(function(request, response) {
     var file      = path.basename(request.url) || 'index.html';
@@ -27,9 +25,8 @@ var server = http.createServer(function(request, response) {
         }
     });
 });
-    
 //Lets start our server
 server.listen(PORT, function(){
-    //Callback triggered when server is successfully listening. Hurray!
+   // Callback triggered when server is successfully listening. Hurray!
     console.log("Server listening on: http://localhost:%s", PORT);
 });
