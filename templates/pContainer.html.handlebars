@@ -1,10 +1,12 @@
+{{#each gameItem}}
 <div class="pContainer">
   <span>
-    <div class="gameImg"><img src={{gameImg}}></div>
+    <div class="gameImg">{{{this.Image}}}</div>
     <div class="gameInfo">
-      <div class="titleText">{{gameTitle}}</div>
-      <div class="gamePrice">{{gamePrice}}</div>
+      <div class="titleText">{{this.Name}}</div>
+      <div class="gamePrice">{{this.Price}}</div>
     </div>
     <button round>X</button>
   </span>
 </div>
+{{/each}}
