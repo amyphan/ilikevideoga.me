@@ -4,6 +4,9 @@ var path = require('path');
 var cheerio = require('cheerio');
 var webRequest = require('request');
 var mysql = require('mysql');
+//EVENT EMITTER
+var events = require('events');
+var eventEmitter = new events.EventEmitter();
 var dbConnection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
@@ -14,17 +17,22 @@ var dbConnection = mysql.createConnection({
 var baseURL = "http://store.steampowered.com/search/results?sort_by=Name&sort_order=ASC&category1=998&cc=us&v5=1&page=";
 
 dbConnection.connect();
-
 getTotalPages(baseURL);
 
-//todo.
-// - Write a separate tag filling script
+/* queryCheck just here to demonstrate programming patterns */
+var queryCheck = function(){
+    console.log('Query Processed');
+}
+eventEmitter.on('queryDone', queryCheck);
+
+dbConnection.connect();
+
+getTotalPages(baseURL);
 
 function webScrape(totalPages)
 {
   var url = baseURL;
   //get total number of pages and begin scraping
-  //totalPages = 2;
   for(pageNumber = 1; pageNumber <= totalPages; pageNumber++)
   {
     var pageURL = baseURL.concat(pageNumber);
@@ -96,18 +104,12 @@ function webScrape(totalPages)
           }
           if(pageNumber === totalPages && i == titles.length -1){
             console.log("Quitting queries!");
-            //dbConnection.end();
           }
         });
-        //dbConnection.end();
       }
     });
-    console.log("Query Set! " + pageNumber + '/' + totalPages);
   }
-  
-  console.log("Scraping Finished!");
 }
-
 
 function getTotalPages(baseURL)
 {
@@ -116,7 +118,7 @@ function getTotalPages(baseURL)
       console.log(error);
       process.exit(0);
     }
-    
+
     var $ = cheerio.load(html);
     var pageIndexes = [];
     $('.search_pagination_right').children().each(function(i, element) {
@@ -126,4 +128,4 @@ function getTotalPages(baseURL)
     console.log("total pages: " + pageIndexes[pageIndexes.length - 2]);
     return webScrape(totalPages);
   });
-}
+} 
