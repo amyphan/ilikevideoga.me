@@ -38,18 +38,21 @@ fs.readFile("./templates/pContainer.html.handlebars", 'utf-8', function(err, dat
         process.exit(0);
       }
       gamesList = results1;
+      console.log(gamesList.length);
       dbConnection.query(sql2, function(error, results2, fields2) {
         if(error){
           console.log(error);
           process.exit(0);
         }
         gamesList.concat(results2);
+        console.log(gamesList.length);
         dbConnection.query(sql3, function(error, results3, fields3) {
           if(error){
             console.log(error);
             process.exit(0);
           }
           gamesList.concat(results3);
+          console.log(gamesList.length);
           queryResults.gameQueueItem = gamesList;
           fs.readFile("./templates/userQueue.html.handlebars", 'utf-8', function(err,data) {
             if(err){
