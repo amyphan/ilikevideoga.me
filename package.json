@@ -14,7 +14,8 @@
     "cheerio": "latest",
     "express": "latest",
     "handlebars": "^4.0.5",
-    "request": "latest"
+    "request": "latest",
+    "async"  : "latest"
   },
   "repository": {
     "type": "git",

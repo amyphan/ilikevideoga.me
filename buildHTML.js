@@ -10,22 +10,14 @@ var dbConnection = mysql.createConnection({
 
 dbConnection.connect();
 
-
-
-var gameList = { "gameItem" : [ { "gameImg"   : "./woops.jpg",
-                   "gameTitle" : "Bad Rats",
-                   "gamePrice" : "$0.99" } ,
-                 { "gameImg"   : "./woops.jpg",
-                   "gameTitle" : "Gunpoint",
-                   "gamePrice" : "$9.99"  } ] };
-
 fs.readFile("./templates/pContainer.html.handlebars", 'utf-8', function(err, data) {
   if(err) {
     console.log("BOOOOOOOOOOM");
-    exit(0);
+    console.log(err);
+    process.exit(0);
   }
   var queryResults;
-  var sql = 'SELECT * FROM `GamesList` WHERE `Id` != 1';
+  var sql = 'SELECT * FROM `GamesList` WHERE (1-SalePrice/Price)*100>30 ORDER BY SalePrice ASC LIMIT 50;';
   dbConnection.query(sql, function(error, results, fields) {
     queryResults = { "gameItem" : results };
     var template = handlebars.compile(data);
@@ -33,7 +25,8 @@ fs.readFile("./templates/pContainer.html.handlebars", 'utf-8', function(err, dat
     fs.readFile("./templates/s.html.handlebars", 'utf-8', function(err, data) {
       if(err) {
         console.log("BOOOOOOOOOOM");
-        exit(0);
+        console.log(err);
+        process.exit(0);
       }
 
       var gamez = { "gameList" : pContainers };
@@ -43,7 +36,8 @@ fs.readFile("./templates/pContainer.html.handlebars", 'utf-8', function(err, dat
       fs.writeFile("s.html", sTemplate(gamez), 'utf-8', function(err) {
         if(err){
           console.log("BOOOOOOOM");
-          exit(0);
+          console.log(err);
+          process.exit(0);
         }
         console.log("Full s.html page generated!");
         dbConnection.end();
