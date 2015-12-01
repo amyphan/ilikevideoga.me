@@ -11,16 +11,30 @@ var dbConnection = mysql.createConnection({
   database : 'SteamGames'
 });
 
+var baseURL = "http://store.steampowered.com/search/results?sort_by=Name&sort_order=ASC&category1=998&cc=us&v5=1&page=";
+
 dbConnection.connect();
 
-webScrape();
+getTotalPages(baseURL);
 
-function webScrape()
+//todo.
+// - Write a separate tag filling script
+
+function webScrape(totalPages)
 {
-  var url = "http://store.steampowered.com/search/results?sort_by=Name&sort_order=ASC&category1=998&cc=us&v5=1&page=1";
-  webRequest(url, function(error, response, html){
-    if(!error){
-      var $ = cheerio.load(html);
+  var url = baseURL;
+  //get total number of pages and begin scraping
+  //totalPages = 2;
+  for(pageNumber = 1; pageNumber <= totalPages; pageNumber++)
+  {
+    var pageURL = baseURL.concat(pageNumber);
+    console.log(pageURL);
+    webRequest(pageURL, function(error, response, html) {
+      if(error) {
+        console.log(error);
+        process.exit(0);
+      }
+      $ = cheerio.load(html);
       var gameList = "";
       var pageHTML = "";
       var imgList = [];
@@ -29,7 +43,7 @@ function webScrape()
       var salePrices = [];
       $('.search_name').each(function(i, element) {
         titles[i] = {};
-        titles[i].title = $(this).text().trim();
+        titles[i].title = $(this).text().trim().replace(/\"/g, "\'");
       });
 
       $('.search_released').each(function(i, element){
@@ -38,6 +52,7 @@ function webScrape()
 
       $('.search_capsule').each(function(i, element){
         imgList[i] = $(this).html();
+        titles[i].ID = $(this).html().split('/')[5];
       });
 
       $('.search_price.responsive_secondrow').each(function(i, element) {
@@ -50,35 +65,65 @@ function webScrape()
         }
         else {
           //set sale price equal to regular price because no discount
-          prices[i] = $(this).text().trim();
+          prices[i] = $(this).text().trim().replace("\$", "");
           salePrices[i] = prices[i];
         }
       });
+      //Begin database entries here
 
-    }
-    //replace any page templating things with a new database insertion here
-
-    for(i = 1; i < titles.length; i++)
-    {
-      var sql = 'INSERT IGNORE INTO GamesList (Id, Name, Price, SalePrice, Image) VALUES (';
+      for(i = 0; i < titles.length; i++)
+      {
+        var sql = 'INSERT IGNORE INTO GamesList (Id, Name, Price, SalePrice, Image) VALUES (';
       
-      var values = '1,"' + titles[i].title.trim() + '","' + prices[i].trim() + '","'+ salePrices[i].trim() + '",\'' + imgList[i] + "\')";
-      sql = sql + values;
-      //Create an update string just in case the entry already exists
-      var updateString = 'ON DUPLICATE KEY UPDATE ' + 'Price="' + prices[i].trim() + '", SalePrice="' + salePrices[i].trim() + '", Image=\'' + imgList[i] +"\';" ;
-      sql = sql + updateString;
-      console.log(sql);
-      dbConnection.query(sql, function(err) {
-        if(err) {
-          console.log('FUuuuuuuuuuuuuuuuuck');
-          console.log(err);
-          process.exit(0); 
-        }
-        console.log("Entry successfully Added!");
-      });
-    }
+        var values = titles[i].ID + ",\"" + titles[i].title.trim().replace(/\'/g,"\'\'") + "\",\"" + prices[i].trim() + '","'+ salePrices[i].trim() + '",\'' + imgList[i] + "\')";
+        sql = sql + values;
+        //Create an update string just in case the entry already exists
+        var updateString = 'ON DUPLICATE KEY UPDATE '+'Price="' + prices[i].trim() + '", SalePrice="' + salePrices[i].trim() + '", Image=\'' + imgList[i] +"\';" ;
+        sql = sql + updateString;
+        console.log(sql);
+        dbConnection.query(sql, function(err) {
+          if(err) {
+            console.log('FUuuuuuuuuuuuuuuuuck');
+            console.log(pageNumber);
+            //console.log(titles[i].title.trim().replace("'", "''"));
+            console.log(err);
+            if(titles[i] && imgList[i]){
+              console.log(titles[i].title.trim());
+              console.log(imgList[i]);
+              console.log(err);
+            }
+            process.exit(0);
+          }
+          if(pageNumber === totalPages && i == titles.length -1){
+            console.log("Quitting queries!");
+            //dbConnection.end();
+          }
+        });
+        //dbConnection.end();
+      }
+    });
+    console.log("Query Set! " + pageNumber + '/' + totalPages);
+  }
+  
+  console.log("Scraping Finished!");
+}
 
-    dbConnection.end();
-  console.log("Check the console!");
-});
+
+function getTotalPages(baseURL)
+{
+  webRequest(baseURL, function(error, response, html) {
+    if(error){
+      console.log(error);
+      process.exit(0);
+    }
+    
+    var $ = cheerio.load(html);
+    var pageIndexes = [];
+    $('.search_pagination_right').children().each(function(i, element) {
+      pageIndexes[i] = $(this).text();
+    });
+    var totalPages = pageIndexes[pageIndexes.length - 2];
+    console.log("total pages: " + pageIndexes[pageIndexes.length - 2]);
+    return webScrape(totalPages);
+  });
 }
