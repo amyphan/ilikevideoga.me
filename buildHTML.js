@@ -25,7 +25,7 @@ fs.readFile("./templates/pContainer.html.handlebars", 'utf-8', function(err, dat
     exit(0);
   }
   var queryResults;
-  var sql = 'SELECT * FROM `GamesList` WHERE `Id` = 1';
+  var sql = 'SELECT * FROM `GamesList` WHERE `Id` != 1';
   dbConnection.query(sql, function(error, results, fields) {
     queryResults = { "gameItem" : results };
     var template = handlebars.compile(data);
