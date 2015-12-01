@@ -4,46 +4,35 @@ var path = require('path');
 var cheerio = require('cheerio');
 var webRequest = require('request');
 var mysql = require('mysql');
-<<<<<<< HEAD
 //EVENT EMITTER
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
-=======
->>>>>>> production/master
 var dbConnection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
   password : 'letmein',
   database : 'SteamGames'
 });
-<<<<<<< HEAD
-=======
-
-dbConnection.connect();
->>>>>>> production/master
 
 var baseURL = "http://store.steampowered.com/search/results?sort_by=Name&sort_order=ASC&category1=998&cc=us&v5=1&page=";
+
+dbConnection.connect();
+getTotalPages(baseURL);
+
+/* queryCheck just here to demonstrate programming patterns */
 var queryCheck = function(){
     console.log('Query Processed');
 }
 eventEmitter.on('queryDone', queryCheck);
 
-//event eventEmitter.emit('QueryDone');
 dbConnection.connect();
 
 getTotalPages(baseURL);
 
-//todo.
-// - Grab the total index of pages
-// - Scrape across all pages
-// - Write a separate tag filling script
-
 function webScrape(totalPages)
 {
-<<<<<<< HEAD
   var url = baseURL;
   //get total number of pages and begin scraping
-  //totalPages = 2;
   for(pageNumber = 1; pageNumber <= totalPages; pageNumber++)
   {
     var pageURL = baseURL.concat(pageNumber);
@@ -54,12 +43,6 @@ function webScrape(totalPages)
         process.exit(0);
       }
       $ = cheerio.load(html);
-=======
-  var url = "http://store.steampowered.com/search/results?sort_by=Name&sort_order=ASC&category1=998&cc=us&v5=1&page=1";
-  webRequest(url, function(error, response, html){
-    if(!error){
-      var $ = cheerio.load(html);
->>>>>>> production/master
       var gameList = "";
       var pageHTML = "";
       var imgList = [];
@@ -68,7 +51,7 @@ function webScrape(totalPages)
       var salePrices = [];
       $('.search_name').each(function(i, element) {
         titles[i] = {};
-        titles[i].title = $(this).text().trim();
+        titles[i].title = $(this).text().trim().replace(/\"/g, "\'");
       });
 
       $('.search_released').each(function(i, element){
@@ -85,9 +68,8 @@ function webScrape(totalPages)
         if($(this).children().text() != "") {
           //checks to see if there was a sale
           //get regular price
-<<<<<<< HEAD
-          prices[i] = $(this).children().text().replace("\$", "");
-          salePrices[i] = $(this).text().replace(prices[i], "").trim().replace("\$", "");
+          prices[i] = $(this).children().text();
+          salePrices[i] = $(this).text().replace(prices[i], "").trim();
         }
         else {
           //set sale price equal to regular price because no discount
@@ -100,17 +82,18 @@ function webScrape(totalPages)
       for(i = 0; i < titles.length; i++)
       {
         var sql = 'INSERT IGNORE INTO GamesList (Id, Name, Price, SalePrice, Image) VALUES (';
-
-        var values = titles[i].ID + "," + "'" +  titles[i].title.trim() + "',\"" + prices[i].trim() + '","'+ salePrices[i].trim() + '",\'' + imgList[i] + "\')";
+      
+        var values = titles[i].ID + ",\"" + titles[i].title.trim().replace(/\'/g,"\'\'") + "\",\"" + prices[i].trim() + '","'+ salePrices[i].trim() + '",\'' + imgList[i] + "\')";
         sql = sql + values;
         //Create an update string just in case the entry already exists
-        var updateString = 'ON DUPLICATE KEY UPDATE ' + 'Id=' + titles[i].ID + ',' +'Price="' + prices[i].trim() + '", SalePrice="' + salePrices[i].trim() + '", Image=\'' + imgList[i] +"\';" ;
+        var updateString = 'ON DUPLICATE KEY UPDATE '+'Price="' + prices[i].trim() + '", SalePrice="' + salePrices[i].trim() + '", Image=\'' + imgList[i] +"\';" ;
         sql = sql + updateString;
-        console.log(titles[i].title);
+        console.log(sql);
         dbConnection.query(sql, function(err) {
           if(err) {
             console.log('FUuuuuuuuuuuuuuuuuck');
             console.log(pageNumber);
+            //console.log(titles[i].title.trim().replace("'", "''"));
             console.log(err);
             if(titles[i] && imgList[i]){
               console.log(titles[i].title.trim());
@@ -121,57 +104,12 @@ function webScrape(totalPages)
           }
           if(pageNumber === totalPages && i == titles.length -1){
             console.log("Quitting queries!");
-            //dbConnection.end();
           }
         });
-        //dbConnection.end();
       }
     });
-    console.log("Query Set! " + pageNumber + '/' + totalPages);
-    eventEmitter.emit('queryDone');
   }
-
-  console.log("Scraping Finished!");
-=======
-          prices[i] = $(this).children().text();
-          salePrices[i] = $(this).text().replace(prices[i], "").trim();
-        }
-        else {
-          //set sale price equal to regular price because no discount
-          prices[i] = $(this).text().trim();
-          salePrices[i] = prices[i];
-        }
-      });
-
-    }
-    //replace any page templating things with a new database insertion here
-
-    for(i = 1; i < titles.length; i++)
-    {
-      var sql = 'INSERT IGNORE INTO GamesList (Id, Name, Price, SalePrice, Image) VALUES (';
-      
-      var values = '1,"' + titles[i].title.trim() + '","' + prices[i].trim() + '","'+ salePrices[i].trim() + '",\'' + imgList[i] + "\')";
-      sql = sql + values;
-      //Create an update string just in case the entry already exists
-      var updateString = 'ON DUPLICATE KEY UPDATE ' + 'Price="' + prices[i].trim() + '", SalePrice="' + salePrices[i].trim() + '", Image=\'' + imgList[i] +"\';" ;
-      sql = sql + updateString;
-      console.log(sql);
-      dbConnection.query(sql, function(err) {
-        if(err) {
-          console.log('FUuuuuuuuuuuuuuuuuck');
-          console.log(err);
-          process.exit(0); 
-        }
-        console.log("Entry successfully Added!");
-      });
-    }
-
-    dbConnection.end();
-  console.log("Check the console!");
-});
->>>>>>> production/master
 }
-
 
 function getTotalPages(baseURL)
 {
