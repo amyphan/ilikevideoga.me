@@ -1,13 +1,13 @@
-{{#each gameItem}}
-<div class="userQueue">
+{{#each gameQueueItem}}
+<div class="pContainer">
   <span>
     <div class="gameImg">{{{this.Image}}}</div>
     <div class="gameInfo">
       <div class="titleText"><a href="http://store.steampowered.com/app/{{this.Id}}">{{this.Name}}</a></div>
       {{#if this.SalePrice}}
-      <div class="gamePrice">{{this.SalePrice}}</div>
+      <div class="gamePrice">${{this.SalePrice}}</div>
       {{else}}
-      <div class="gamePrice">{{this.Price}}</div>
+      <div class="gamePrice">${{this.Price}}</div>
       {{/if}}
     </div>
     <button round>X</button>
