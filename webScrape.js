@@ -25,8 +25,6 @@ var queryCheck = function(){
 }
 eventEmitter.on('queryDone', queryCheck);
 
-dbConnection.connect();
-
 getTotalPages(baseURL);
 
 function webScrape(totalPages)
