@@ -14,7 +14,8 @@ html, body {
 ::-webkit-scrollbar-thumb {
     background: #393812;
     -webkit-border-radius: 1ex;
-    -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 0px 1px 2px rgba(255, 153, 0, 1.0);
+    background-color:#ff9900;
 }
 
 ::-webkit-scrollbar-corner {
@@ -76,20 +77,23 @@ html, body {
 }
 
 .pContainer .gameImg {
-  display: inline-block;
   float: left;
   height: 45px;
   width: 120px;
   background-color: green;
 }
 
+.pContainer a {
+  color:inherit;
+}
+
 .pContainer button {
-  display: inline-block;
   float: right;
   font: bold 1em Helvetica, Sans-Serif;
 }
 
 .sales {
+    text-align:center;
     margin-left: 15px;
     margin-right: 30px;
     height: 100%;
@@ -97,6 +101,7 @@ html, body {
     border-style: solid;
     border-color: #A7A7A7;
     border-width: 5px;
+    overflow-y: auto;
 }
 
 .sales p {
@@ -122,6 +127,34 @@ html, body {
     text-align: center;
 }
 
+.personalizedFeed > .defaultQueue > .forms {
+  margin: 0 auto;
+  height: 50%;
+  width: 70%;
+  text-align: center;
+  padding: 50px;
+}
+
+.personalizedFeed > .defaultQueue > .forms > button{
+  float: right;
+}
+
+.userQueue {
+  display: inline-block;
+  border-style: solid;
+  border-width: 2px;
+  width: 90%;
+  margin: 5px;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+.userQueue .gameImg {
+  float: left;
+  height: 45px;
+  width: 120px;
+  background-color: green;
+}
 .piktur {
     margin-left: auto;
     margin-right: auto;

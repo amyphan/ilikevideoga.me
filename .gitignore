@@ -1,3 +1,4 @@
 *.out
-
+testPipe.js
+testPipe2.js
 node_modules/
