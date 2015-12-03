@@ -10,8 +10,9 @@ var webRequest = require('request');
 const PORT=80;
 //Create a server
 var server = http.createServer(function(request, response) {
-    var file      = path.basename(request.url) || 'index.html';
-    console.log(request.url);  
+    var file      = path.basename(request.url) || 's.html';
+    
+    /*console.log(request.url);  
     fs.exists(file, function(exists) {
         if(exists) {
             fs.readFile(file, function(err, data) {
@@ -25,8 +26,15 @@ var server = http.createServer(function(request, response) {
             response.writeHead(404, {'Content-Type': 'text/html'});
             response.end("404 page not found");
         }
+    });*/
+    console.log(request.url);
+    fs.readFile(file, function(err, data) {
+      if(err){
+        console.log(err);
+        process.exit(0);
+      }
+      response.end(data);
     });
-
 });
 //Lets start our server
 server.listen(PORT, function(){
